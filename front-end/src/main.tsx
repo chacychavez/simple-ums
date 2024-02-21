@@ -8,7 +8,12 @@ import {
 import App from './App.tsx'
 import './index.css'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({defaultOptions: {
+  queries: {
+    staleTime: 3600 * 1000, // 1 hour
+    refetchOnWindowFocus: false, // default: true
+  },
+},})
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
