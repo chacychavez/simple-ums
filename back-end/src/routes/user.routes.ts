@@ -1,4 +1,4 @@
-import { Request, Response, Router } from 'express'
+import { NextFunction, Request, Response, Router } from 'express'
 import { createCache, memoryStore } from 'cache-manager';
 
 const MINUTE =  60 * 1000
@@ -23,7 +23,7 @@ const fetchPlus = async (url: string, options = {}, retries = 3): Promise<any> =
     }
 }
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     const searchParams = new URLSearchParams(req.query as Record<string, string>).toString();
     const cachedData = await cache.get('users_page_' + req.query.page);
     if (cachedData) {
@@ -45,11 +45,12 @@ router.get("/", async (req: Request, res: Response) => {
             }
         } catch (error) {
             console.log(error);
+            next(error)
         }
     }
 });
   
-router.get("/:id", async (req: Request, res: Response) => {
+router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
     const { id: userId } = req.params;
     const cachedData = await cache.get(`user_${userId}`);
     if (cachedData) {
@@ -70,11 +71,12 @@ router.get("/:id", async (req: Request, res: Response) => {
             }
         } catch (error) {
             console.log(error);
+            next(error)
         }
     }
 });
 
-router.post("/create/", async (req: Request, res: Response) => {
+router.post("/create/", async (req: Request, res: Response, next: NextFunction) => {
     const { body } = req;
     try {
         const response = await fetchPlus('https://reqres.in/api/users', {
@@ -98,6 +100,7 @@ router.post("/create/", async (req: Request, res: Response) => {
         }
     } catch (error) {
         console.log(error);
+        next(error)
     }
 });
 
