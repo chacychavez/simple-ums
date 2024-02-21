@@ -8,18 +8,16 @@ import { getUsers } from "./services/api";
 function App() {
   const viewModalRef = useRef<HTMLDialogElement>(null);
   const createModalRef = useRef<HTMLDialogElement>(null);
-  const [currUsers, setCurrUsers] = useState<User[]>([])
+  const [currUsers, setCurrUsers] = useState<User[]>([]);
   const [currUser, setCurrUser] = useState<User>();
-  const [currPage, setCurrPage] = useState<number>(1)
+  const [currPage, setCurrPage] = useState<number>(1);
 
-  
-
-  const { data: usersData } = useQuery({ queryKey: ['todos', currPage], queryFn: () => getUsers(currPage) })
+  const { data: usersData } = useQuery({ queryKey: ['todos', currPage], queryFn: () => getUsers(currPage) });
 
   useEffect(() => {
     if(usersData?.data) 
       setCurrUsers(usersData.data)
-  }, [usersData])
+  }, [usersData]);
 
   const openUserDetails = (user: User) => {
     setCurrUser(user)

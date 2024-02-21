@@ -32,6 +32,10 @@ function CreateUserForm({ closeModal, onUserCreate }: CreateUserFormProps) {
             onUserCreate(res)
             onClose();
         },
+        onError: (error: unknown) => {
+            console.log(error)
+            alert(error)
+        }
     })
 
     const onSubmit: SubmitHandler<IFormInput> = (data: Partial<User>) => createUser(data);
