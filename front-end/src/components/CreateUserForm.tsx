@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { User } from "../user";
+import { User } from "../types/user";
+import { postUser } from "../services/api";
 
 interface IFormInput {
     first_name: string;
@@ -21,21 +22,11 @@ function CreateUserForm({ closeModal, onUserCreate }: CreateUserFormProps) {
         reset();
         closeModal();
     }
-
-    const postUser = async (data: any) => {
-        const res = await fetch("https://reqres.in/api/users/", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data)
-        });
-        return await res.json();
-      };
+    
 
     const { mutate: createUser, isPending: isCreating } = useMutation({
         mutationFn: postUser,
-        onSuccess: (res) => {
+        onSuccess: (res: User) => {
             // Invalidate and refetch
             // queryClient.invalidateQueries({ queryKey: ['todos'] })
             onUserCreate(res)
@@ -43,7 +34,7 @@ function CreateUserForm({ closeModal, onUserCreate }: CreateUserFormProps) {
         },
     })
 
-    const onSubmit: SubmitHandler<IFormInput> = data => createUser(data);
+    const onSubmit: SubmitHandler<IFormInput> = (data: Partial<User>) => createUser(data);
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="relative">

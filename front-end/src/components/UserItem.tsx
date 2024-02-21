@@ -1,4 +1,4 @@
-import { User } from "../user";
+import { User } from "../types/user";
 
 interface UserItemProps {
     user: User;

@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { User } from "./user";
-import { UserListResponse } from "./api";
+import { User } from "./types/user";
 import UserItem from "./components/UserItem";
 import CreateUserForm from "./components/CreateUserForm";
+import { getUsers } from "./services/api";
 
 function App() {
   const viewModalRef = useRef<HTMLDialogElement>(null);
@@ -12,10 +12,7 @@ function App() {
   const [currUser, setCurrUser] = useState<User>();
   const [currPage, setCurrPage] = useState<number>(1)
 
-  const getUsers = async (page: number) : Promise<UserListResponse> => {
-    const res = await fetch(`https://reqres.in/api/users?page=${page}`);
-    return await res.json();
-  };
+  
 
   const { data: usersData } = useQuery({ queryKey: ['todos', currPage], queryFn: () => getUsers(currPage) })
 
