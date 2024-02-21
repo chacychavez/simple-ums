@@ -11,6 +11,9 @@
 1. Run dev server by entering `npm run dev` on your terminal.
 2. It should be accessible by typing `http://localhost:3000/` on your browser.
 
+### Running the automated tests:
+1. Run tests by entering `npm run test` on your terminal.
+
 ---
 
 ### Frontend:
