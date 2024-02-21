@@ -3,7 +3,11 @@ import { User } from "../types/user";
 
 export const getUsers = async (page: number) : Promise<UserListResponse> => {
     const res = await fetch(`http://localhost:3000/users?page=${page}`);
-    return await res.json();
+    const resObj = await res.json();
+    if(res.ok)
+        return resObj;
+    else 
+        throw new Error(resObj.message)
 };
 
 export const postUser = async (data: Partial<User>) => {
@@ -14,5 +18,9 @@ export const postUser = async (data: Partial<User>) => {
         },
         body: JSON.stringify(data)
     });
-    return await res.json();
+    const resObj = await res.json();
+    if(res.ok)
+        return resObj;
+    else 
+        throw new Error(resObj.message)
 };

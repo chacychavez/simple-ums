@@ -4,6 +4,17 @@ import { createCache, memoryStore } from 'cache-manager';
 const MINUTE =  60 * 1000
 const router = Router();
 
+const getErrorObject = (httpCode: number) => {
+    if (httpCode >= 500) {
+        return {mesage: 'Server error!'};
+    } else if(httpCode >= 400) {
+        if (httpCode === 400)
+            return {mesage: 'Invalid reqeust!'};
+        if (httpCode === 404)
+            return {mesage: 'Item not found!'};
+    }
+}
+
 // Create memory cache synchronously
 const cache = createCache(memoryStore(), {
   max: 100,
@@ -35,7 +46,8 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
             const response = await fetchPlus(`https://reqres.in/api/users?${searchParams}`);
             if (!response.ok) {
                 // Handle HTTP errors
-                res.status(response.status).send(response.statusText)
+                const errorObject = JSON.stringify(getErrorObject(response.status))
+                res.status(response.status).type('application/json').send(errorObject)
             } else {
                 const users = await response.json();
                 console.log('Success fetching', users);
@@ -61,7 +73,8 @@ router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
             const response = await fetchPlus(`https://reqres.in/api/users/${userId}`);
             if (!response.ok) {
                 // Handle HTTP errors
-                res.status(response.status).send(response.statusText);
+                const errorObject = JSON.stringify(getErrorObject(response.status))
+                res.status(response.status).type('application/json').send(errorObject)
             } else {
                 const user = await response.json();
                 console.log('Success fetching', user);
@@ -88,7 +101,8 @@ router.post("/create/", async (req: Request, res: Response, next: NextFunction) 
         });
         if (!response.ok) {
             // Handle HTTP errors
-            res.status(response.status).send(response.statusText);
+            const errorObject = JSON.stringify(getErrorObject(response.status))
+            res.status(response.status).type('application/json').send(errorObject)
         } else {
             const user = await response.json();
             console.log('Success creating', user);

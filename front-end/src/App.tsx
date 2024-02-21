@@ -12,7 +12,7 @@ function App() {
   const [currUser, setCurrUser] = useState<User>();
   const [currPage, setCurrPage] = useState<number>(1);
 
-  const { data: usersData } = useQuery({ queryKey: ['todos', currPage], queryFn: () => getUsers(currPage) });
+  const { data: usersData, error, isLoading } = useQuery({ queryKey: ['todos', currPage], queryFn: () => getUsers(currPage) });
 
   useEffect(() => {
     if(usersData?.data) 
@@ -51,6 +51,10 @@ function App() {
       <div className="w-full text-center">
         <h1 className="text-2xl font-bold">Welcome to ReqRes.in UMS!</h1>
       </div>
+
+      {isLoading && <div className="mt-6 w-full flex justify-center"><span className="loading loading-spinner loading" /></div>}
+
+      {error && <div className="mt-6 w-full flex justify-center"><h1 className="text-2xl">Error occured: {error.message}</h1></div>}
 
       <div className="mt-6 flex flex-wrap justify-center gap-6">
         {currUsers.map(user => (
