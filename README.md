@@ -5,7 +5,7 @@
 1. Make sure `Node.js` is installed locally.
 2. From project root directory, go to `back-end` directory by entering `cd back-end` on your terminal.
 3. Install packages by entering `npm install` on your terminal.
-4. (Optional): Install `npm` and `concurrently` globally by entering: `npm install -g npm concurrently` on your terminal.
+4. Install `npm` and `concurrently` globally by entering: `npm install -g npm concurrently` on your terminal.
 
 ### Running the backend server:
 1. Run dev server by entering `npm run dev` on your terminal.
