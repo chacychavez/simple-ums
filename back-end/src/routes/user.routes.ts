@@ -10,6 +10,19 @@ const cache = createCache(memoryStore(), {
   ttl: 60 * MINUTE,
 });
 
+// Add simple retry mechanism
+const fetchPlus = async (url: string, options = {}, retries = 3): Promise<any> => {
+    try {
+        const response = await fetch(url, options)
+        if (retries === 0 || response.ok)
+            return response
+        return fetchPlus(url, options, retries - 1)
+    }
+    catch (error) {
+        throw new Error('Error occured while fetching: ' + url);
+    }
+}
+
 router.get("/", async (req: Request, res: Response) => {
     const searchParams = new URLSearchParams(req.query as Record<string, string>).toString();
     const cachedData = await cache.get('users_page_' + req.query.page);
@@ -19,7 +32,7 @@ router.get("/", async (req: Request, res: Response) => {
     } else {
         try {
             console.log(`https://reqres.in/api/users?${searchParams}`)
-            const response = await fetch(`https://reqres.in/api/users?${searchParams}`);
+            const response = await fetchPlus(`https://reqres.in/api/users?${searchParams}`);
             if (!response.ok) {
                 // Handle HTTP errors
                 res.status(response.status).send(response.statusText)
@@ -44,7 +57,7 @@ router.get("/:id", async (req: Request, res: Response) => {
         res.send(cachedData);
     } else {
         try {
-            const response = await fetch(`https://reqres.in/api/users/${userId}`);
+            const response = await fetchPlus(`https://reqres.in/api/users/${userId}`);
             if (!response.ok) {
                 // Handle HTTP errors
                 res.status(response.status).send(response.statusText);
@@ -64,7 +77,7 @@ router.get("/:id", async (req: Request, res: Response) => {
 router.post("/create/", async (req: Request, res: Response) => {
     const { body } = req;
     try {
-        const response = await fetch('https://reqres.in/api/users', {
+        const response = await fetchPlus('https://reqres.in/api/users', {
             method: 'POST', 
             headers: {
                 "Content-Type": "application/json",
